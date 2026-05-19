@@ -17,7 +17,8 @@ SPEED = 1000000
 
 clock = pygame.time.Clock()
 
-DRONE_COLOR = (248, 168, 0)
+OPTIMAL_COLOR = (248, 168, 0)
+DRONE_COLOR = (0, 252, 255)
 BACKGROUND_COLOR = (104, 56, 0)
 USER_COLOR = (1, 252, 128)
 SCORE_COLOR = (248, 252, 248)
@@ -166,6 +167,10 @@ class DroneGameAI:
         x, y = self.drone
         rect = pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         pygame.draw.rect(screen, DRONE_COLOR, rect)
+
+        x, y = self.opti[0]
+        rect = pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+        pygame.draw.rect(screen, OPTIMAL_COLOR, rect)
 
         for x, y, _ in self.users:
             rect = pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
