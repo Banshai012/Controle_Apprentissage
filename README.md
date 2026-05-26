@@ -29,8 +29,7 @@ python drone.py
 
 Explications détaillées des scripts et fonctions
 -
-
-1) `drone.py` (toutes versions)
+`drone.py` (toutes versions)
 - But : simuler un drone sur une grille et entraîner un agent (DQN) pour maximiser la capture de signal depuis des "users" positionnés aléatoirement.
 - Classe principale : `DroneGameAI`
 	- `__init__()` : initialise la position du drone, la direction, la grille, les utilisateurs (`_place_user()`), le score initial, le timer et calcule la position optimale (`_optimal()`).
