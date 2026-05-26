@@ -47,7 +47,7 @@ class DroneGameAI:
         self.gradient_prev = 0
         self.time = 40
         self.opti = self._optimal()
-        self.visited = set() # Un 'set' est ultra rapide pour vérifier si une case y est
+        self.visited = set()
         self.visited.add(self.drone)
 
     def _place_user(self):
@@ -99,7 +99,7 @@ class DroneGameAI:
         self.gradient_prev = 0
         self.time = 40
         self.opti = self._optimal()
-        self.visited = set() # Un 'set' est ultra rapide pour vérifier si une case y est
+        self.visited = set()
         self.visited.add(self.drone)
 
     def get_state(self):
@@ -215,27 +215,21 @@ def train():
     run = True
     while run:
 
-        # get old state
         state_old = agent.get_state(game)
 
-        # get move
         final_move = agent.get_action(state_old)
 
-        # perform move and get new state
         reward, done, score = game.play_step(final_move, plot_scores, plot_mean_scores, agent)
         state_new = agent.get_state(game)
 
-        # train short memory
         agent.train_short_memory(state_old, final_move, reward, state_new, done)
 
-        # remember
         rewardtotal += reward
         agent.remember(state_old, final_move, reward, state_new, done)
         game.draw(agent.n_games, record)
         clock.tick(SPEED)
        
         if done:
-            # train long memory, plot result
             game.reset()
             agent.n_games += 1
             agent.train_long_memory()

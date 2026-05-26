@@ -111,7 +111,7 @@ class DroneGameAI:
             np.clip(self.gradient, 0.01, 1.0)*math.copysign(1, self.gradient),
             np.clip(self.gradient_prev, 0.01, 1.0)*math.copysign(1, self.gradient_prev),
             self.time / 40
-        ] + dir_actuelle + dir_prev # On fusionne les listes
+        ] + dir_actuelle + dir_prev
         return np.array(state, dtype=np.float32)
 
     def play_step(self, action, plot_scores, plot_mean_scores, agent):
@@ -193,9 +193,8 @@ def train(epsilon_start=1.0, duration_minutes=5):
     mean_score = 0
     
     agent = Agent()
-    agent.epsilon = epsilon_start # On injecte l'epsilon de l'instance
+    agent.epsilon = epsilon_start
     
-    # On essaie de charger le meilleur modèle existant
     agent.load_latest_model()
     
     game = DroneGameAI()
@@ -205,7 +204,6 @@ def train(epsilon_start=1.0, duration_minutes=5):
     
     run = True
     while run:
-        # Condition d'arrêt chronométrée
         if time.time() - start_time > duration_seconds:
             print(f"Fin de l'instance (Epsilon: {epsilon_start}) après {duration_minutes} min.")
             agent.model.save('model_fin_' + str(int(mean_score*1000)) + '.pth')

@@ -132,12 +132,10 @@ class Agent:
             if not os.path.exists(model_folder_path):
                 return False
             
-            # Cherche tous les fichiers commençant par 'model_fin_' et finissant par '.pth'
             files = glob.glob(os.path.join(model_folder_path, 'model_fin_*.pth'))
             if not files:
                 return False
 
-            # Extraction du score depuis le nom du fichier (ex: 'model_fin_15.pth' -> 15)
             def extract_score(file_path):
                 try:
                     name = os.path.basename(file_path)
