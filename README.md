@@ -2,13 +2,15 @@
 
 Description
 -
-Ce dépôt contient plusieurs variantes d'un projet de contrôle d'un drone pour des expériences d'apprentissage (mémoire courte). Les trois dossiers principaux représentent des versions différentes du même travail : configuration d'origine et variantes utilisées pour un mémoire.
+Contrôle d'un drone par apprentissage par renforcement (DQN) : le drone doit se positionner sur une grille pour maximiser le débit capté depuis des utilisateurs placés aléatoirement. Ce dépôt compare **3 stratégies** qui ne diffèrent que par la quantité de mémoire (directions passées) donnée à l'agent en entrée du réseau — c'est le sujet d'étude du mémoire.
 
 Arborescence principale
 -
-- `Controle_Apprentissage Origine/` : version de départ (scripts de base et modèles originaux)
-- `Controle_Apprentissage Memoire 2/` : version modifiée avec mémoire sur 2 pas, scripts : `drone.py`, `multi.py`, `visualisation.py` et un dossier `model/` contenant de nombreux checkpoints `.pth`
-- `Controle_Apprentissage Memoire 3/` : version modifiée avec mémoire sur 3 pas, mêmes scripts principaux et dossier `model/`
+- `strategie_1_sans_memoire/` : version de référence, l'agent ne voit que l'état courant (pas d'historique de direction)
+- `strategie_2_memoire_2_pas/` : l'état inclut en plus la direction précédente (mémoire sur 1 pas en arrière)
+- `strategie_3_memoire_3_pas/` : l'état inclut la direction précédente **et** celle d'avant (mémoire sur 2 pas en arrière)
+
+Chaque dossier est autonome : scripts `drone.py`, `multi.py`, `visualisation.py` et un dossier `model/` avec ses propres checkpoints `.pth`.
 
 Fichiers importants
 -
@@ -19,10 +21,10 @@ Fichiers importants
 
 Exemples rapides
 -
-Se placer dans la version souhaitée puis lancer :
+Se placer dans la stratégie voulue puis lancer :
 
 ```bash
-cd "Controle_Apprentissage Memoire 2"
+cd strategie_2_memoire_2_pas
 python drone.py
 ```
 
@@ -37,10 +39,10 @@ Explications détaillées des scripts et fonctions
 	- `_score(position)` : calcule la somme des contributions de chaque utilisateur pour une position donnée (fonction inversement proportionnelle à la distance).
 	- `_optimal()` : balaye la grille pour trouver la case donnant le meilleur score total (utilisée pour normaliser/évaluer la performance locale).
 	- `reset()` : remet l'environnement dans un état aléatoire (nouveaux users, timer, etc.).
-	- `get_state()` : renvoie l'observation fournie à l'agent (varie selon la version) :
-		- Origine : `[debnorm, gradient, gradient_prev, time_norm, collision_up, collision_right, collision_down, collision_left]` (taille 8).
-		- Memoire 2 : `[debnorm, gradient, gradient_prev, time_norm] + dir_actuelle(4) + dir_prev(4)` (taille 12).
-		- Memoire 3 : idem Memoire 2 + `dir_prev_prev(4)` (taille 16).
+	- `get_state()` : renvoie l'observation fournie à l'agent (varie selon la stratégie) :
+		- `strategie_1_sans_memoire` : `[debnorm, gradient, gradient_prev, time_norm, collision_up, collision_right, collision_down, collision_left]` (taille 8).
+		- `strategie_2_memoire_2_pas` : `[debnorm, gradient, gradient_prev, time_norm] + dir_actuelle(4) + dir_prev(4)` (taille 12).
+		- `strategie_3_memoire_3_pas` : idem `strategie_2` + `dir_prev_prev(4)` (taille 16).
 	- `play_step(action, ...)` : applique une action (one-hot 4 valeurs) pour déplacer le drone, met à jour `debit`/`gradient`, calcule le `reward`, gère `done` (collision ou timer) et réinitialise les users en cas de succès proche de l'optimal.
 	- `draw()` : affiche l'état si Pygame est utilisé.
 	- `train()` : boucle d'entraînement qui interagit avec `Agent` : obtention d'état, sélection d'action (`agent.get_action`), entraînement court terme (`train_short_memory`) et stockage dans la mémoire pour entraînement long terme (`train_long_memory`) quand l'épisode est terminé.
